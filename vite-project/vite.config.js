@@ -6,6 +6,7 @@ export default defineConfig({
   base: '/p164/',
   plugins: [react()],
   build: {
-    outDir: "docs"
+    outDir: "../docs",
+    emptyOutDir: true
   }
 })
