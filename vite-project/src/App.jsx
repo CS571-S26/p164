@@ -1,10 +1,16 @@
-import { useState } from 'react'
-import {Card, Button} from 'react-bootstrap'
+import { Routes, Route } from 'react-router-dom'
+import NavBar from './components/NavBar'
+import HowTo from './pages/HowTo'
+import Game from './pages/Game'
 
 function App() {
   return (
     <div>
-      <h1>Test</h1>
+      <NavBar/>
+      <Routes>
+        <Route path="/" element={<Game />} />
+        <Route path="/how-to-play" element={<HowTo />} />
+      </Routes>
     </div>
   )
 }
