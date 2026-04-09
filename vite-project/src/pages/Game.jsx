@@ -93,13 +93,13 @@ function Game(){
             )}
            
             <div style={{position:"absolute", left:"20px", top:"60px"}}>
-                <h1 style={{fontWeight:"bold"}}>Actors Banned</h1>
+                <h1 style={{fontWeight:"bold"}}>Actors Banned : </h1>
                 <ul style={{listStyle:"none"}}>
                     {Object.entries(usedActors).filter(([name, count]) => count >= 3).map(([name, count]) => (
                         <li key={name}>{name}</li>
                     ))}
                 </ul>
-                <h1 style={{fontWeight:"bold"}}>Directors Banned</h1>
+                <h1 style={{fontWeight:"bold"}}>Directors Banned : </h1>
                 <ul style={{listStyle:"none"}}>
                     {Object.entries(usedDirectors).filter(([name, count]) => count >= 3).map(([name, count]) => (
                         <li key={name}>{name}</li>

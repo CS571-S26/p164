@@ -6,7 +6,7 @@ function NavBar() {
     <Navbar bg="dark" variant="dark" fixed="bottom">
       <Container className="justify-content-center">
         <Nav>
-          <Nav.Link as={Link} to="/">Game</Nav.Link>
+          <Nav.Link as={Link} to="/">Home</Nav.Link>
           <Nav.Link as={Link} to="/how-to-play">How To Play</Nav.Link>
         </Nav>
       </Container>
