@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import NavBar from './components/NavBar'
 import HowTo from './pages/HowTo'
 import Game from './pages/Game'
@@ -8,7 +9,7 @@ function App() {
     <div>
       <NavBar/>
       <Routes>
-        <Route path="/" element={<Game />} />
+        <Route path="/" element={<Game/>} />
         <Route path="/how-to-play" element={<HowTo />} />
       </Routes>
     </div>
