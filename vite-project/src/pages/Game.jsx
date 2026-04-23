@@ -54,6 +54,7 @@ function Game(){
         setPlayedMovies([]);
         setTimer(baseMaxTime);
         setMaxTime(baseMaxTime);
+        setInventory({});
         setScoreBonus(0);
         getRandomMovie();
     }
