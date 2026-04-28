@@ -1,14 +1,21 @@
 import { useState, useEffect } from 'react';
-import { API_KEY, BASE_URL, IMG_URL } from '../config.js';
+import { API_KEY, BASE_URL, IMG_URL, GENRE_MAP } from '../config.js';
 import { Button} from 'react-bootstrap';
 import MovieCard from '../components/MovieCard.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import CircleTimer from '../components/CircleTimer.jsx';
 import Shop from './Shop.jsx';
-import CoinSprite from '../assets/CoinSprite.png';
+import CoinDisplay from '../components/CoinDisplay.jsx';
+import ShopButton from '../assets/ShopButton.png'
+import ShopButtonAlt from '../assets/ShopButtonAlt.png'
+import ImageButton from '../components/ImageButton.jsx';
+import PlayAgainButton from '../assets/PlayAgainButton.png';
+import PlayAgainButtonAlt from '../assets/PlayAgainButtonAlt.png';
+import PlayButton from '../assets/PlayButton.png';
+import PlayButtonAlt from '../assets/PlayButtonAlt.png';
 
 function Game(){
-    const baseMaxTime = 20;
+    const baseMaxTime = 15;
     const [maxTime, setMaxTime] = useState(baseMaxTime);
     const [timer, setTimer] = useState(baseMaxTime);
 
@@ -26,17 +33,22 @@ function Game(){
     const [gameOver, setGameOver] = useState(false);
     const [openShop, setOpenShop] = useState(false);
     const [inventory, setInventory] = useState({});
+    const [gamble, setGamble] = useState(false);
+
+    const [gameStarted, setGameStarted] = useState(false);
 
     useEffect(() => {
-        getRandomMovie();
+        getRandomMovie()
     }, [])
 
     useEffect(()=> {
+        if(!gameStarted) return;
         if(timer == 0){
             if(score > highScore){
                 setHighScore(score);
                 localStorage.setItem("highScore", score);
             }
+            saveStats(score);
             setGameOver(true);
             return;
         }
@@ -44,7 +56,7 @@ function Game(){
             setTimer(t=>t-1);
         }, 1000)
         return () => clearInterval(interval)
-    }, [timer, openShop])
+    }, [timer, gameStarted])
 
     function restart(){
         setGameOver(false);
@@ -57,7 +69,18 @@ function Game(){
         setInventory({});
         setScoreBonus(0);
         getRandomMovie();
+        setGamble(false);
     }
+
+    function saveStats(finalScore){
+        const totalGames = parseInt(localStorage.getItem("totalGames") || 0) + 1;
+        const totalScore = parseInt(localStorage.getItem("totalScore") || 0) + finalScore;
+        const totalMovies = parseInt(localStorage.getItem("totalMovies") || 0) + playedMovies.length;
+        localStorage.setItem("totalGames", totalGames);
+        localStorage.setItem("totalScore", totalScore);
+        localStorage.setItem("totalMovies", totalMovies);
+    }
+
     function guessMovie(guessedMovie){
         fetch(`${BASE_URL}/movie/${guessedMovie.id}/credits?api_key=${API_KEY}`).then(r=>r.json()).then(castData => {
             const cast = castData.cast.map(a=>a.name);
@@ -70,8 +93,17 @@ function Game(){
             
 
             if(!hasBannedActor && !hasBannedDirector && (sharedActors.length > 0 || sharedDirectors.length > 0)){
-                setScore(s => s + 1 + scoreBonus);
-                setMovieData(guessedMovie);
+                if(gamble){
+                    if(Math.random() < 0.5)
+                        setScore(s => s * 2)
+                    else
+                        setScore(0);
+                    setGamble(false);
+                }
+                else
+                    setScore(s => s + 1 + scoreBonus);
+                
+                setMovieData(guessedMovie, true, true);
 
                 if(sharedActors.length > 0){
                     const newUsedActors = {...usedActors}
@@ -92,7 +124,7 @@ function Game(){
             }
         })
     }
-    function setMovieData(movie, resetTimer = true){
+    function setMovieData(movie, resetTimer = true, addToStats = false){
         fetch(`${BASE_URL}/movie/${movie.id}/credits?api_key=${API_KEY}`).then(r=>r.json()).then(castData => {
             setMovie({
                 id: movie.id,
@@ -103,8 +135,27 @@ function Game(){
                 directors: castData.crew.filter(c => c.job === "Director").map(c => c.name),
                 year: movie.release_date.slice(0, 4)
             })
-            setPlayedMovies([...playedMovies, movie]);
+            
+            if(addToStats){
+                const updatedMovies = [...playedMovies, movie];
+                setPlayedMovies(updatedMovies);
+                const movieCounts = JSON.parse(localStorage.getItem("movieCounts") || "{}");
+                movieCounts[movie.title] = (movieCounts[movie.title] || 0) + 1;
+                localStorage.setItem("movieCounts", JSON.stringify(movieCounts));
 
+                const genreCounts = JSON.parse(localStorage.getItem("genreCounts") || "{}");
+                movie.genre_ids?.forEach(id => {
+                    const name = GENRE_MAP[id]
+                    if(name) genreCounts[name] = (genreCounts[name] || 0) + 1
+                })
+                localStorage.setItem("genreCounts", JSON.stringify(genreCounts));
+
+                const directorCounts = JSON.parse(localStorage.getItem("directorCounts") || "{}");
+                castData.crew.filter(c => c.job === "Director").forEach(d => {
+                    directorCounts[d.name] = (directorCounts[d.name] || 0) + 1
+                })
+                localStorage.setItem("directorCounts", JSON.stringify(directorCounts));
+            }
             if(resetTimer){
                 setTimer(baseMaxTime);
                 setMaxTime(baseMaxTime);
@@ -120,12 +171,14 @@ function Game(){
     }
 
     if(openShop) return <Shop score={score} setScore={setScore} setOpenShop={setOpenShop} inventory={inventory} setInventory={setInventory} setTimer={setTimer} 
-    timer={timer} maxTime={maxTime} setMaxTime={setMaxTime} onSkip={getRandomMovie} currentMovie={movie} setScoreBonus={setScoreBonus}></Shop>
-
-    if(!movie) return <p>Loading movie...</p>
-
+    timer={timer} maxTime={maxTime} setMaxTime={setMaxTime} onSkip={getRandomMovie} currentMovie={movie} setScoreBonus={setScoreBonus} setGamble={setGamble}></Shop>
+    if(!movie) return (
+        <p>Movie loading..</p>
+    )
     return (
     <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr", height:"100vh", padding:"20px"}}>
+        <img src={PlayAgainButton} style={{display:"none"}} alt=""/>
+        <img src={PlayAgainButtonAlt} style={{display:"none"}} alt=""/>
         {/* LEFT SIDE */}
         <div style={{padding:"20px", paddingTop:"50px"}}>
             <h4 style={{fontWeight:"bold"}}>Actors Banned</h4>
@@ -143,16 +196,18 @@ function Game(){
         </div>
         {/* MIDDLE */}
         <div className="d-flex flex-column align-items-center" style={{paddingTop:"50px"}}>
-            <div className="d-flex align-items-center gap-2">
-                <img src={CoinSprite} width={64} height={64} />
-                <h2 style={{margin:0, marginLeft:"12px", fontWeight:"bold"}}>{score}</h2>
-            </div>
+            <CoinDisplay score={score}></CoinDisplay>
             <div style={{marginTop:"50px", display:"flex", flexDirection:"column", alignItems:"center"}}>
                 <MovieCard movie={movie}/>
-                {!gameOver && <SearchBar onGuess={guessMovie} currentMovie={movie} playedMovies={playedMovies}
+                {!gameOver && gameStarted && <SearchBar onGuess={guessMovie} currentMovie={movie} playedMovies={playedMovies}
                     bannedActors={Object.keys(usedActors).filter(a => usedActors[a] >= 3)}
                     bannedDirectors={Object.keys(usedDirectors).filter(a => usedDirectors[a] >= 3)}/>}
-                {gameOver && <Button variant="success" size="lg" style={{marginTop:"60px"}} onClick={restart}>Play Again</Button>}
+
+                    {!gameStarted && 
+                        <ImageButton img = {PlayButton} hoveredImg={PlayButtonAlt} onClick={() => setGameStarted(true)} altText="A button to start the game"></ImageButton>}
+                    {gameOver && 
+                        <ImageButton img={PlayAgainButton} hoveredImg={PlayAgainButtonAlt} onClick={restart} altText="A button to play again"></ImageButton>}
+
             </div>
         </div>
         {/* RIGHT SIDE */}
@@ -160,7 +215,11 @@ function Game(){
             <h2 style={{fontWeight:"bold"}}>High Score : ${highScore}</h2>
             {!gameOver && <div className="d-flex flex-column align-items-center" style={{marginTop:"120px"}}>
                 <CircleTimer timer={timer} maxTime={maxTime}/>
-                <Button variant="warning" style={{marginTop:"80px", width:"120px", height:"120px", fontWeight:"bold", fontSize:"25px"}} onClick={() => setOpenShop(true)}>Shop</Button>
+
+                <div style={{marginTop:"50px"}}>
+                    <ImageButton img={ShopButton} hoveredImg={ShopButtonAlt} onClick={() => setOpenShop(true)} altText="A button for the shop"></ImageButton>
+                </div>
+
             </div>}
         </div>
 

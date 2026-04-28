@@ -8,6 +8,7 @@ function NavBar() {
         <Nav>
           <Nav.Link as={Link} to="/">Home</Nav.Link>
           <Nav.Link as={Link} to="/how-to-play">How To Play</Nav.Link>
+          <Nav.Link as={Link} to="/stats">Stats</Nav.Link>
         </Nav>
       </Container>
     </Navbar>

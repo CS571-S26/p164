@@ -5,9 +5,18 @@ import ShopButton from '../components/ShopButton';
 import MovieCard from '../components/MovieCard';
 import CircleTimer from '../components/CircleTimer';
 import { AnimatePresence, motion } from 'framer-motion';
+import CoinDisplay from '../components/CoinDisplay';
+import ImageButton from '../components/ImageButton';
+import ReturnButton from '../assets/ReturnButton.png';
+import ReturnButtonAlt from '../assets/ReturnButtonAlt.png';
+
+[ReturnButton,ReturnButtonAlt].forEach(src => {
+    const img = new Image()
+    img.src = src
+})
 
 const SHOP_ITEMS = [
-    { id: "1", name: "+5 Seconds", description: "Adds 5 seconds to the current timer", price: 1,
+    { id: "1", name: "+5 Seconds", description: "Adds 5 seconds to the current timer", price: 2,
     effect: ({setTimer, setMaxTime}) => {
        setTimer(t => {
         const newTime = t + 5
@@ -16,23 +25,25 @@ const SHOP_ITEMS = [
         })
     }
     },
-    { id: "2", name: "Skip", description: "Skip the current movie", price: 1,
+    { id: "2", name: "Skip", description: "Skip the current movie",
+        price: (inventory) => (inventory["2"] || 0) * 2 + 3,
         effect : ({onSkip}) => onSkip()
     },
     {id:"3", name:"Pay Raise", description:"+$1 per correct guess", 
         price: (inventory) => (inventory["3"] || 0) * 3 + 3, 
         effect: ({setScoreBonus}) => setScoreBonus(b => b + 1),
-    }
+    },
+    
 ]
 
-function Shop({score, setScore, setOpenShop, inventory, setInventory, setTimer, timer, maxTime, setMaxTime, onSkip, currentMovie, setScoreBonus}){
+function Shop({score, setScore, setOpenShop, inventory, setInventory, setTimer, timer, maxTime, setMaxTime, onSkip, currentMovie, setScoreBonus, setGamble}){
     const [message, setMessage] = useState("")
 
     function buyItem(item){
         const price = typeof item.price === "function" ? item.price(inventory) : item.price;
         if(score < price) return;
         setScore(s => s - price);
-        item.effect({setTimer, setMaxTime, onSkip, inventory, setScoreBonus})
+        item.effect({setTimer, setMaxTime, onSkip, inventory, setScoreBonus, setGamble})
         const newInventory = {...inventory, [item.id]: (inventory[item.id] || 0) + 1};
         setInventory(newInventory);
         setMessage(`${item.name} purchased!`)
@@ -57,15 +68,15 @@ function Shop({score, setScore, setOpenShop, inventory, setInventory, setTimer, 
         {/* MIDDLE*/}
         <div className="d-flex flex-column align-items-center" style={{paddingTop:"50px", gap:"20px"}}>
             <h1 style={{fontWeight:"bold", fontSize:"50px"}}>SHOP</h1>
-            <div className="d-flex align-items-center gap-2">
-                <img src={CoinSprite} width={48} height={48} style={{imageRendering:"pixelated"}}/>
-                <h2 style={{margin:0, marginLeft:"8px", fontWeight:"bold"}}>{score}</h2>
-            </div>
-            
+            <CoinDisplay score={score}></CoinDisplay>
+
             {SHOP_ITEMS.map(item => (
                 <ShopButton key={item.id} item={item} score={score} inventory={inventory} onBuy={buyItem}/>
             ))}
-            <Button variant="danger" onClick={closeShop}>Return</Button>
+
+            <ImageButton img={ReturnButton} hoveredImg={ReturnButtonAlt} onClick={closeShop} altText="A button to leave the shop."></ImageButton>
+
+          
         </div>
 
         {/* RIGHT*/}
