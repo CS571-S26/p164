@@ -2,7 +2,7 @@ import { Card } from "react-bootstrap";
 
 function MovieCard({movie}){
     return (
-        <Card bg="dark" text="white" style={{width:500, borderRadius:"12px", border:"2px solid rgba(255,255,255,0.3)"}}>
+        <Card bg="dark" text="white" style={{width:"min(500px, 90vw)", borderRadius:"12px", border:"2px solid rgba(255,255,255,0.3)"}}>
             <Card.Body>
                 <img src={movie.poster} alt={movie.title} width={200} style={{borderRadius:"6px", marginBottom:"10px"}}></img>
                 <Card.Title style={{ fontWeight: "bold" }}>{movie.title} <span style={{ fontWeight: "normal" }}>({movie.year})</span></Card.Title>

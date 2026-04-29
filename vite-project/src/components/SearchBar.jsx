@@ -30,7 +30,8 @@ function SearchBar({onGuess, currentMovie, playedMovies, bannedActors, bannedDir
     }
 
     return (
-        <div style={{width:500, marginTop: '50px'}}>
+        <div style={{width:"min(500px, 90vw)", marginTop: '50px'}}>
+            <label htmlFor="movie-search" style={{display:"none"}}>Search for a movie</label>
             <Form.Control type="text" placeholder="Enter a movie" value={input} onChange={handleInput}></Form.Control>
             {suggestions.length > 0 && (
                 <ListGroup>

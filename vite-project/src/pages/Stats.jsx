@@ -1,3 +1,4 @@
+import StatCard from "../components/StatCard";
 
 function Stats(){
     const totalGames = parseInt(localStorage.getItem("totalGames")) || 0;
@@ -20,38 +21,16 @@ function Stats(){
         <div className="d-flex flex-column align-items-center" style={{marginTop:"75px"}}>
             <h1 style={{fontWeight:"bold"}}>LIFETIME STATISTICS</h1>
             <div style={{marginTop:"30px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px", maxWidth:"600px"}}>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{totalGames}</h2>
-                    <p>Total Games Played</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{totalScore}</h2>
-                    <p>Total Score</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{highScore}</h2>
-                    <p>High Score</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{avgScore}</h2>
-                    <p>Average Score</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{totalMovies}</h2>
-                    <p>Total Movies Played</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{favMovie}</h2>
-                    <p>Favorite Movie</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{favGenre}</h2>
-                    <p>Favorite Genre</p>
-                </div>
-                <div style={{borderRadius:"12px", padding:"20px", textAlign:"center"}}>
-                    <h2 style={{fontWeight:"bold"}}>{favDirector}</h2>
-                    <p>Favorite Director</p>
-                </div>
+
+                <StatCard value={"$"+highScore} label={"High Score"}></StatCard>
+                <StatCard value={"$"+totalScore} label={"Total Coins"}></StatCard>
+                <StatCard value={"$"+avgScore} label={"Average Coins"}></StatCard>
+                <StatCard value={totalGames} label={"Total Games Played"}></StatCard>
+                <StatCard value={totalMovies} label={"Total Movies Played"}></StatCard>
+                <StatCard value={favMovie} label={"Favorite Movie"}></StatCard>
+                <StatCard value={favGenre} label={"Favorite Genre"}></StatCard>
+                <StatCard value={favDirector} label={"Favorite Director"}></StatCard>
+                
             </div>
         </div>
     )
