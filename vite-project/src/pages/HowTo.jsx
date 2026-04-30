@@ -2,6 +2,7 @@ import MovieScreenshot from '../assets/MovieScreenshot.png';
 import ShopScreenshot from '../assets/ShopScreenshot.png';
 import SearchBarScreenshot from '../assets/SearchBarScreenshot.png';
 import BanScreenshot from '../assets/BanScreenshot.png';
+import OptionsScreenshot from '../assets/OptionsScreenshot.png';
 
 [MovieScreenshot, ShopScreenshot].forEach(src => {
     const img = new Image()
@@ -36,6 +37,9 @@ function HowTo(){
             <h4 style={{fontWeight:"bold", marginTop:"20px"}}>4. STATS</h4>
             <p>View the stats page to see your high score and other statistics. Clearing your browser history will clear your stats.</p>
             
+            <h4 style={{fontWeight:"bold", marginTop:"20px"}}>5. OPTIONS</h4>
+            <p>View the options page to adjust the game's difficulty.</p>
+             <img src={OptionsScreenshot} className="mx-auto" style={{width:"100%", maxWidth:"300px", borderRadius:"12px", margin:"20px 0", display:"block"}} alt="Screenshot of the options page"/>
         </div>
         </div>
     )

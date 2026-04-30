@@ -10,10 +10,6 @@ import ImageButton from '../components/ImageButton';
 import ReturnButton from '../assets/ReturnButton.png';
 import ReturnButtonAlt from '../assets/ReturnButtonAlt.png';
 
-[ReturnButton, ReturnButtonAlt].forEach(src => {
-    const img = new Image()
-    img.src = src
-})
 
 const SHOP_ITEMS = [
     {
@@ -66,6 +62,7 @@ function Shop({ score, setScore, setOpenShop, inventory, setInventory, setTimer,
 
     return (
         <div className="container-fluid" style={{ padding: "20px", paddingLeft: "100px" }}>
+            <img src={ReturnButton} style={{ display: "none" }} alt="" />
             <div className="row">
                 {/* LEFT */}
                 <div className="col-12 col-md-3 d-flex flex-column align-items-center" style={{ paddingTop: "135px", paddingLeft: "90px" }}>

@@ -16,7 +16,8 @@ import PlayButtonAlt from '../assets/PlayButtonAlt.png';
 import Options from './Options.jsx';
 
 function Game() {
-    const defaultMaxTime = parseInt(localStorage.getItem("optMaxTime")) || DEFAULT_MAX_TIME;
+    const banLimit = parseInt(localStorage.getItem("OptMaxBans")) || 3;
+    const defaultMaxTime = parseInt(localStorage.getItem("OptMaxTime")) || DEFAULT_MAX_TIME;
     const [baseMaxTime, setBaseMaxTime] = useState(defaultMaxTime);
     const [maxTime, setMaxTime] = useState(defaultMaxTime);
     const [timer, setTimer] = useState(defaultMaxTime);
@@ -101,7 +102,7 @@ function Game() {
             const allCurrentNames = [...new Set([...movie.castList, ...movie.directors])];
 
             const sharedNames = allGuessedNames.filter(n => allCurrentNames.includes(n));
-            const hasBannedName = sharedNames.some(n => (usedActors[n] || 0) >= 3 || (usedDirectors[n] || 0) >= 3);
+            const hasBannedName = sharedNames.some(n => (usedActors[n] || 0) >= banLimit || (usedDirectors[n] || 0) >= banLimit);
 
             if (!hasBannedName && sharedNames.length > 0) {
                 if (gamble) {
@@ -188,13 +189,13 @@ function Game() {
                 <div className="col-12 col-md-3" style={{ padding: "20px", paddingTop: "40px" }}>
                     <h4 style={{ fontWeight: "bold" }}>Actors Banned : </h4>
                     <ul style={{ listStyle: "none", padding: 0 }}>
-                        {Object.entries(usedActors).filter(([name, count]) => count >= 3).map(([name, count]) => (
+                        {Object.entries(usedActors).filter(([name, count]) => count >= banLimit).map(([name, count]) => (
                             <li key={name}>{name}</li>
                         ))}
                     </ul>
                     <h4 style={{ fontWeight: "bold" }}>Directors Banned : </h4>
                     <ul style={{ listStyle: "none", padding: 0 }}>
-                        {Object.entries(usedDirectors).filter(([name, count]) => count >= 3).map(([name, count]) => (
+                        {Object.entries(usedDirectors).filter(([name, count]) => count >= banLimit).map(([name, count]) => (
                             <li key={name}>{name}</li>
                         ))}
                     </ul>
@@ -205,8 +206,8 @@ function Game() {
                         <div className="d-flex flex-column align-items-center">
                             {movie && <MovieCard movie={movie} />}
                             {!gameOver && gameStarted && movie && <SearchBar onGuess={guessMovie} currentMovie={movie} playedMovies={playedMovies}
-                                bannedActors={Object.keys(usedActors).filter(a => usedActors[a] >= 3)}
-                                bannedDirectors={Object.keys(usedDirectors).filter(a => usedDirectors[a] >= 3)} />}
+                                bannedActors={Object.keys(usedActors).filter(a => usedActors[a] >= banLimit)}
+                                bannedDirectors={Object.keys(usedDirectors).filter(a => usedDirectors[a] >= banLimit)} />}
                             {!gameStarted &&
                                 <ImageButton img={PlayButton} hoveredImg={PlayButtonAlt} onClick={() => setGameStarted(true)} altText="A button to start the game" />}
                             {gameOver &&
