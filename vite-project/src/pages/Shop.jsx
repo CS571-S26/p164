@@ -61,7 +61,7 @@ function Shop({score, setScore, setOpenShop, inventory, setInventory, setTimer, 
     }
 
    return (
-    <div className="container-fluid" style={{padding:"20px"}}>
+    <div className="container-fluid" style={{ padding:"20px", paddingLeft:"100px"}}>
         <div className="row">
             {/* LEFT */}
             <div className="col-12 col-md-3 d-flex flex-column align-items-center" style={{paddingTop:"135px", paddingLeft:"90px"}}>
@@ -71,7 +71,7 @@ function Shop({score, setScore, setOpenShop, inventory, setInventory, setTimer, 
                 </div>
             </div>
             {/* MIDDLE */}
-            <div className="col-12 col-md-6 d-flex flex-column align-items-center" style={{paddingTop:"14px", gap:"20px"}}>
+            <div className="col-12 col-md-6 d-flex flex-column align-items-center" style={{paddingTop:"14px", gap:"20px", paddingLeft:"200px"}}>
                 <h1 style={{fontWeight:"bold", fontSize:"50px"}}>SHOP</h1>
                     <div className="d-flex align-items-center gap-3">
                     <CoinDisplay score={score}/>
