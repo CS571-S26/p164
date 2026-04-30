@@ -111,11 +111,19 @@ function Game() {
                     setScore(s => s + 1 + scoreBonus);
                 }
                 setMovieData(guessedMovie, true, true);
+
                 const newUsedActors = { ...usedActors }
+                const newUsedDirectors = { ...usedDirectors }
                 sharedNames.forEach(name => {
-                    newUsedActors[name] = (newUsedActors[name] || 0) + 1;
+                    const isDirector = directors.includes(name) || movie.directors.includes(name)
+                    if (isDirector) {
+                        newUsedDirectors[name] = (newUsedDirectors[name] || 0) + 1
+                    } else {
+                        newUsedActors[name] = (newUsedActors[name] || 0) + 1
+                    }
                 })
-                setUsedActors(newUsedActors);
+                setUsedActors(newUsedActors)
+                setUsedDirectors(newUsedDirectors)
             }
         })
     }
