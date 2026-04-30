@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { API_KEY, BASE_URL, IMG_URL, GENRE_MAP } from '../config.js';
+import { API_KEY, BASE_URL, IMG_URL, GENRE_MAP, DEFAULT_MAX_TIME } from '../config.js';
 import { Button } from 'react-bootstrap';
 import MovieCard from '../components/MovieCard.jsx';
 import SearchBar from '../components/SearchBar.jsx';
@@ -13,9 +13,10 @@ import PlayAgainButton from '../assets/PlayAgainButton.png';
 import PlayAgainButtonAlt from '../assets/PlayAgainButtonAlt.png';
 import PlayButton from '../assets/PlayButton.png';
 import PlayButtonAlt from '../assets/PlayButtonAlt.png';
+import Options from './Options.jsx';
 
 function Game() {
-    const defaultMaxTime = 15;
+    const defaultMaxTime = parseInt(localStorage.getItem("optMaxTime")) || DEFAULT_MAX_TIME;
     const [baseMaxTime, setBaseMaxTime] = useState(defaultMaxTime);
     const [maxTime, setMaxTime] = useState(defaultMaxTime);
     const [timer, setTimer] = useState(defaultMaxTime);

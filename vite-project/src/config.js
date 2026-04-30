@@ -1,8 +1,8 @@
 const API_KEY = "855d8040158295962daee5a7f0a200d7"
 const BASE_URL = "https://api.themoviedb.org/3"
 const IMG_URL = "https://image.tmdb.org/t/p/w500"
-
-export { API_KEY, BASE_URL, IMG_URL }
+const DEFAULT_MAX_TIME = 15;
+export { API_KEY, BASE_URL, IMG_URL, DEFAULT_MAX_TIME}
 
 export const GENRE_MAP = {
     28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",

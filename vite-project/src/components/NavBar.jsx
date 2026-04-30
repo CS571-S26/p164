@@ -10,6 +10,7 @@ function NavBar() {
       <Nav className="ms-3">
         <Nav.Link as={Link} to="/how-to-play" style={{color:"#2b2b2b", fontWeight:"600"}}>How To Play</Nav.Link>
         <Nav.Link as={Link} to="/stats" style={{color:"#2b2b2b", fontWeight:"600"}}>Stats</Nav.Link>
+        <Nav.Link as={Link} to="/options" style={{color:"#2b2b2b", fontWeight:"600"}}>Options</Nav.Link>
       </Nav>
     </Navbar>
   )
