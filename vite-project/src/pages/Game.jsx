@@ -15,7 +15,7 @@ import PlayButton from '../assets/PlayButton.png';
 import PlayButtonAlt from '../assets/PlayButtonAlt.png';
 
 function Game() {
-    const defaultMaxTime = 15;
+    const defaultMaxTime = 60;
     const [baseMaxTime, setBaseMaxTime] = useState(defaultMaxTime);
     const [maxTime, setMaxTime] = useState(defaultMaxTime);
     const [timer, setTimer] = useState(defaultMaxTime);
@@ -93,43 +93,29 @@ function Game() {
     function guessMovie(guessedMovie) {
         fetch(`${BASE_URL}/movie/${guessedMovie.id}/credits?api_key=${API_KEY}`).then(r => r.json()).then(castData => {
             const cast = castData.cast.map(a => a.name);
-            const sharedActors = cast.filter(a => movie.castList.includes(a));
-            const hasBannedActor = sharedActors.some(a => (usedActors[a] || 0) >= 3);
-
             const directors = castData.crew.filter(c => c.job === "Director").map(c => c.name);
-            const sharedDirectors = directors.filter(d => movie.directors?.includes(d));
-            const hasBannedDirector = sharedDirectors.some(d => (usedDirectors[d] || 0) >= 3);
 
 
-            if (!hasBannedActor && !hasBannedDirector && (sharedActors.length > 0 || sharedDirectors.length > 0)) {
+            const allGuessedNames = [...new Set([...cast, ...directors])];
+            const allCurrentNames = [...new Set([...movie.castList, ...movie.directors])];
+
+            const sharedNames = allGuessedNames.filter(n => allCurrentNames.includes(n));
+            const hasBannedName = sharedNames.some(n => (usedActors[n] || 0) >= 3 || (usedDirectors[n] || 0) >= 3);
+
+            if (!hasBannedName && sharedNames.length > 0) {
                 if (gamble) {
-                    if (Math.random() < 0.5)
-                        setScore(s => s * 2)
-                    else
-                        setScore(0);
+                    if (Math.random() < 0.5) setScore(s => s * 2)
+                    else setScore(0);
                     setGamble(false);
-                }
-                else
+                } else {
                     setScore(s => s + 1 + scoreBonus);
-
+                }
                 setMovieData(guessedMovie, true, true);
-
-                if (sharedActors.length > 0) {
-                    const newUsedActors = { ...usedActors }
-                    sharedActors.forEach(name => {
-                        newUsedActors[name] = (newUsedActors[name] || 0) + 1;
-                    })
-                    setUsedActors(newUsedActors);
-                }
-                if (sharedDirectors.length > 0) {
-                    const newUsedDirectors = { ...usedDirectors };
-                    sharedDirectors.forEach(name => {
-                        newUsedDirectors[name] = (newUsedDirectors[name] || 0) + 1;
-                    })
-                    setUsedDirectors(newUsedDirectors);
-                }
-            } else {
-                //incorrect guess 
+                const newUsedActors = { ...usedActors }
+                sharedNames.forEach(name => {
+                    newUsedActors[name] = (newUsedActors[name] || 0) + 1;
+                })
+                setUsedActors(newUsedActors);
             }
         })
     }

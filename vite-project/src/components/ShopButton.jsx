@@ -5,7 +5,7 @@ function ShopButton({item, score, inventory, onBuy}){
 
     return (
 
-        <Card bg="dark" text="white" style={{width:"300px"}}>
+        <Card bg="dark" text="white" style={{height:"100%"}}>
             <Card.Body>
                 <Card.Title style={{fontWeight:"bold"}}>{item.name}</Card.Title>
                 <Card.Text>{item.description}</Card.Text>
