@@ -15,7 +15,7 @@ import PlayButton from '../assets/PlayButton.png';
 import PlayButtonAlt from '../assets/PlayButtonAlt.png';
 
 function Game() {
-    const defaultMaxTime = 60;
+    const defaultMaxTime = 15;
     const [baseMaxTime, setBaseMaxTime] = useState(defaultMaxTime);
     const [maxTime, setMaxTime] = useState(defaultMaxTime);
     const [timer, setTimer] = useState(defaultMaxTime);
